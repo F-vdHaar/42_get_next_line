@@ -6,7 +6,7 @@
 #    By: fvon-de <fvon-der@student.42heilbronn.d    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/22 22:17:03 by fvon-de           #+#    #+#              #
-#    Updated: 2024/10/22 22:17:05 by fvon-de          ###   ########.fr        #
+#    Updated: 2024/10/22 22:20:28 by fvon-de          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,13 +31,19 @@ SRC_DIR = src/$(VERSION)
 OBJ_DIR = obj/$(VERSION)
 
 # Source files
-SRC_FILES = get_next_line.c  \
+SRC_FILES =  \
+            get_next_line.c  \
+            get_next_line_utils.c
 
 # Define object files manually
-OBJS = $(OBJ_DIR)/get_next_line.o \
+OBJS =  \
+        $(OBJ_DIR)/get_next_line.o \
+        $(OBJ_DIR)/get_next_line_utils.o
 
 # Debug objects
-DEBUG_OBJS = $(OBJ_DIR)/debug_get_next_line.o \
+DEBUG_OBJS =  \
+            $(OBJ_DIR)/debug_get_next_line.o \
+            $(OBJ_DIR)/debug_get_next_line_utils.o \
 
 
 # Default rule to build 
