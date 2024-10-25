@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fvon-de <fvon-der@student.42heilbronn.d    +#+  +:+       +#+        */
+/*   By: fvon-der <fvon-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 22:25:47 by fvon-de           #+#    #+#             */
-/*   Updated: 2024/10/22 22:25:49 by fvon-de          ###   ########.fr       */
+/*   Updated: 2024/10/25 19:56:40 by fvon-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/get_next_line.h"
+#include "get_next_line.h"
 
 /* 
 static buffer 
