@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t	ft_strlen(const char *s)
 {
@@ -42,7 +42,7 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
-char	*ft_partstrjoin(char *s1, char *s2, int *eol_loc)
+char	*ft_strjoin(char *s1, char *s2, int *eol_loc)
 {
 	char	*result;
 	size_t	len1;

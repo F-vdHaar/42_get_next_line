@@ -6,46 +6,51 @@
 /*   By: fvon-der <fvon-der@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 20:05:51 by fvon-der          #+#    #+#             */
-/*   Updated: 2024/10/25 20:05:59 by fvon-der         ###   ########.fr       */
+/*   Updated: 2024/10/28 13:57:43 by fvon-der         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /* 
-static buffer 
-		- leftover data between calls.
-copy_full_line to start constructing the line from buffer.
-Updates bufer with any remaining data after the newline.
-extract_line to read more data if the newline wasn't found.
-		- this doeas the
+Read the next line from a file descriptor using a static buffer
+Return pointer to the line read or NULL on failure or EOF
+Static buffer holds leftover data between calls
+- copy_full_line constructs the line from buffer
+- shift_buffer removes the processed line
+- eof_residue indicates if a newline was found
+BONUS : array of fd
 */
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
+	static char	buffer[OPEN_MAX][BUFFER_SIZE + 1];
 	char		*line;
 	int			eol_loc;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd >= OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	eol_loc = -1;
-	line = copy_full_line(buffer, &eol_loc);
+	line = copy_full_line(buffer[fd], &eol_loc);
 	if (!line)
 		return (NULL);
-	shift_buffer(buffer, &buffer[eol_loc + 1], BUFFER_SIZE + 1);
-	if (eol_loc < 0)
+	shift_buffer(buffer[fd], &buffer[fd][eol_loc + 1], BUFFER_SIZE + 1);
+	line = eof_residue(fd, line, buffer[fd], &eol_loc);
+	if (!line || line[0] == '\0')
 	{
-		line = eof_residue(fd, line, buffer, &eol_loc);
-		if (!line || line[0] == '\0')
-		{
-			free(line);
-			return (NULL);
-		}
+		free(line);
+		return (NULL);
 	}
 	return (line);
 }
 
-char	*copy_full_line(char *buffer, int *eol_posi)
+// Copy a full line from buffer to a new string
+// Update eol_loc with position of last newline
+// Return pointer to newly allocated line, or NULL on failure
+// Calculate length
+//Allocate memory for line and null terminator
+//Copy line contents
+//Update eol_loc
+char	*copy_full_line(char *buffer, int *eol_loc)
 {
 	size_t	len;
 	char	*line;
@@ -60,10 +65,13 @@ char	*copy_full_line(char *buffer, int *eol_posi)
 	ft_memcpy(line, buffer, len);
 	line[len] = '\0';
 	if (len > 0 && line[len - 1] == '\n')
-		*eol_posi = len - 1;
+		*eol_loc = len - 1;
 	return (line);
 }
 
+// Locate the end of line in a string
+// Return position after newline or end of string
+// Return -1 if input line is NULL
 size_t	find_eol(char *line)
 {
 	size_t	i;
@@ -80,18 +88,22 @@ size_t	find_eol(char *line)
 	return (i);
 }
 
-// ZEROING THE BUFFER IS ABSOLUTLY NECESSARY
-char	*eof_residue(int fd, char *line, char *buffer, int *eol_posi)
+// Read from file descriptor until newline or EOF
+// Append to existing line with ft_partstrjoin
+// Return updated line or NULL on failure
+// Ensure buffer is zeroed to avoid corruption
+// ZEROING THE BUFFER IS ABSOLUTLY NECESSARY to avoid corruption
+char	*eof_residue(int fd, char *line, char *buffer, int *eol_loc)
 {
 	char	new_buffer[BUFFER_SIZE + 1];
-	ssize_t	read_bytes;
+	ssize_t	read_check;
 	size_t	line_size;
 
-	while (*eol_posi == -1)
+	while (*eol_loc == -1)
 	{
 		ft_bzero(new_buffer, (BUFFER_SIZE + 1));
-		read_bytes = read(fd, new_buffer, BUFFER_SIZE);
-		if (read_bytes == -1)
+		read_check = read(fd, new_buffer, BUFFER_SIZE);
+		if (read_check == -1)
 		{
 			free(line);
 			ft_bzero(buffer, (BUFFER_SIZE + 1));
@@ -100,9 +112,12 @@ char	*eof_residue(int fd, char *line, char *buffer, int *eol_posi)
 		line_size = find_eol(new_buffer);
 		shift_buffer(buffer, &new_buffer[line_size], (BUFFER_SIZE + 1));
 		new_buffer[line_size] = '\0';
-		line = ft_partstrjoin(line, new_buffer, eol_posi);
-		if (read_bytes == 0)
+		line = ft_strjoin(line, new_buffer, eol_loc);
+		if (read_check == 0)
+		{
+			ft_bzero(buffer, BUFFER_SIZE + 1);
 			break ;
+		}
 	}
 	return (line);
 }
