@@ -6,7 +6,7 @@
 #    By: fvon-der <fvon-der@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/22 22:17:03 by fvon-de           #+#    #+#              #
-#    Updated: 2024/11/04 16:49:33 by fvon-der         ###   ########.fr        #
+#    Updated: 2024/11/04 17:01:09 by fvon-der         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ INCLUDE		= include
 LIBFT		= ../libft
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -Wunused -I$(INCLUDE) -I$(LIBFT)/include
-DEBUG_FLAGS = -g -O0 -Wall -Wextra -Werror -fsanitize=address -fsanitize=undefined \
+DEBUG_FLAGS = $(CFLAGS) -g -O0 -Wall -Wextra -Werror -fsanitize=address -fsanitize=undefined \
 			  -fno-strict-aliasing -fno-omit-frame-pointer -fstack-protector -DDEBUG -fno-inline
 AR			 = ar rcs
 
